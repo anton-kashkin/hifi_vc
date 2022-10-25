@@ -1,4 +1,5 @@
 import logging
+from typing import Tuple
 
 import numpy as np
 import parselmouth
@@ -8,7 +9,7 @@ from scipy.interpolate import interp1d
 
 def compute_f0_from_wav(
     wav_path: str,
-):
+) -> np.ndarray:
     sampling_rate = 16000
     snd = parselmouth.Sound(wav_path).resample(sampling_rate)
     x = snd.as_array()
@@ -17,19 +18,21 @@ def compute_f0_from_wav(
     pitch = snd.to_pitch(time_step=0.01)
     pitch = pitch.selected_array["frequency"]
 
-    return pitch, 0, 0
+    return pitch
 
 
 def get_lf0_from_wav(wav_path: str, sr=24000) -> torch.Tensor:
-    f0, sr, wav_len = compute_f0_from_wav(wav_path)
+    f0 = compute_f0_from_wav(wav_path)
 
     unvoiced, continious_f0 = get_continious_f0(f0, 10)
-    lf0_uv = np.concatenate([continious_f0[None, :], unvoiced[None, :]], axis=0)
-    lf0_uv = torch.from_numpy(lf0_uv)
-    return lf0_uv.unsqueeze(0)
+    log_f0_with_unvoiced = np.concatenate(
+        [continious_f0[None], unvoiced[None]], axis=0
+    )
+    log_f0_with_unvoiced = torch.from_numpy(log_f0_with_unvoiced)
+    return log_f0_with_unvoiced.unsqueeze(0)
 
 
-def convert_continuos_f0(f0: np.ndarray):
+def convert_continuous_f0(f0: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     unvoiced = np.float32(f0 != 0)
 
     if (f0 == 0).all():
@@ -52,10 +55,9 @@ def convert_continuos_f0(f0: np.ndarray):
     return unvoiced, continuous_f0
 
 
-def get_continious_f0(f0):
-    uv, cont_f0 = convert_continuos_f0(f0)
-    
-    nonzero_indices = np.nonzero(cont_f0)
-    cont_lf0 = cont_f0.copy()
-    cont_lf0[cont_f0 > 0] = np.log(cont_f0[cont_f0 > 0])
-    return uv, cont_lf0
+def get_continious_f0(f0: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    unvoiced, continuous_f0 = convert_continuous_f0(f0)
+
+    cont_lf0 = continuous_f0.copy()
+    cont_lf0[continuous_f0 > 0] = np.log(continuous_f0[continuous_f0 > 0])
+    return unvoiced, cont_lf0

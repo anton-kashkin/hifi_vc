@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Optional
 
 import torch
@@ -6,16 +7,12 @@ from librosa.filters import mel as librosa_mel_fn
 mel_basis = {}
 hann_window = {}
 
-from dataclasses import dataclass
-
 
 @dataclass
 class AudioFeaturesParams:
-    max_abs_value: float = 4.0
     win_size: int = 1024
     hop_size: int = 240
     num_mel_bins: int = 80
-    symmetric_output: bool = True
     sampling_rate: int = 24000
     fmin: float = 50.0
     fmax: Optional[float] = 11025.0
