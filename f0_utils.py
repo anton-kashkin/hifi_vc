@@ -24,7 +24,7 @@ def compute_f0_from_wav(
 def get_lf0_from_wav(wav_path: str, sr=24000) -> torch.Tensor:
     f0 = compute_f0_from_wav(wav_path)
 
-    unvoiced, continious_f0 = get_continious_f0(f0, 10)
+    unvoiced, continious_f0 = get_continious_f0(f0)
     log_f0_with_unvoiced = np.concatenate(
         [continious_f0[None], unvoiced[None]], axis=0
     )

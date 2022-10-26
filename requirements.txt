@@ -3,4 +3,4 @@ scipy
 librosa
 torch >= 1.7
 numpy
-
+tqdm
