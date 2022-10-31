@@ -1,4 +1,4 @@
-ARG FROM_IMAGE_NAME=nvcr.io/nvidia/pytorch:21.05-py3
+ARG FROM_IMAGE_NAME=nvcr.io/nvidia/pytorch:22.09-py3
 FROM ${FROM_IMAGE_NAME}
 
 COPY . /hifi_vc

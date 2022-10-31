@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+import librosa
 import torch
 from librosa.filters import mel as librosa_mel_fn
 
@@ -18,6 +19,19 @@ class AudioFeaturesParams:
     fmax: Optional[float] = 11025.0
     n_fft: int = 2048
     central_padding: bool = False
+
+
+def load_and_preprocess_audio(audio_file: str, sr: int, trim=False) -> torch.Tensor:
+    audio, _ = librosa.load(audio_file, sr=sr)
+
+    if trim:
+        audio, _ = librosa.effects.trim(audio, top_db=10)
+
+    audio = torch.FloatTensor(audio).squeeze()
+    audio /= torch.abs(audio).max()
+
+    audio = audio.unsqueeze(0)
+    return audio
 
 
 def dynamic_range_compression_torch(
