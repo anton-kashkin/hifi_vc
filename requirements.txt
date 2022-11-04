@@ -1,6 +1,6 @@
 praat-parselmouth
 scipy
 librosa
-torch>=1.13
+torch
 numpy
 tqdm

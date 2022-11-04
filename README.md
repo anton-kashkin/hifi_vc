@@ -24,7 +24,7 @@ In this work, we propose a new any-to-any voice conversion pipeline. Our approac
     docker run --gpus '"device=0"' -it --net=host hifi_vc
     ```
 
-2. Using Pip:
+2. Using Pip (use `torch>=1.13`):
 
     ```sh
     pip install -r requirements
