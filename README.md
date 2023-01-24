@@ -5,4 +5,4 @@
 ### Anton Kashkin, Ivan Karpukhin, Svyatoslav Shishkin
 
 
-We provide our pretrained model and notebook for inference in the following repository: https://github.com/tinkoff-ai/hifi_vc
+We provide our pretrained model, notebook for inference and demo audio samples in the following repository: https://github.com/tinkoff-ai/hifi_vc
